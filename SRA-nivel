@@ -1,0 +1,283 @@
+#include <iostream>
+#include <iomanip>
+#include <string.h>
+#include <conio.h>
+#include <stdio.h>
+
+using namespace std;
+
+
+
+class Sistem
+{
+protected:
+    char *regulator, *traductor, *ee;
+
+public:
+    Sistem(char*, char*, char*);
+    ~Sistem();
+    void afisare_date();
+};
+
+Sistem::Sistem(char*R, char*T, char *EE)
+{
+    regulator = new char[strlen(R)+1];
+    strcpy(regulator, R);
+    traductor = new char[strlen(T)+1];
+    strcpy(traductor, T);
+    ee = new char[strlen(EE)+1];
+    strcpy(ee, EE);
+}
+
+Sistem::~Sistem()
+{
+    cout<<"Distruge obiect :" << endl;
+    cout<<"\nObiect distrus :"<< endl << endl;
+}
+
+void Sistem::afisare_date()
+{
+	cout<<"\n Sistem";
+	cout<<"\n Regulator:" << regulator;
+	cout<<"\n Traductor:" << traductor;
+	cout<<"\n Element executie:" <<ee;
+}
+
+class Sistem_Reglare : public Sistem
+{
+protected:
+    char *traductor_de_nivel, *robinet_reglare, *regulator_de_nivel;
+
+public:
+    Sistem_Reglare(char*, char*, char*, char*, char*, char*);
+    ~Sistem_Reglare();
+    void afisare_date_SR();
+};
+
+Sistem_Reglare::Sistem_Reglare(char *R, char *T, char *EE, char *TN, char *RReg, char *RN) : Sistem(R, T, EE)
+{
+    traductor_de_nivel = new char[strlen(TN)+1];
+    strcpy(traductor_de_nivel, TN);
+    robinet_reglare = new char[strlen(RReg)+1];
+    strcpy(robinet_reglare, RReg);
+    regulator_de_nivel = new char[strlen(RN)+1];
+    strcpy(regulator_de_nivel, RN);
+}
+
+Sistem_Reglare::~Sistem_Reglare()
+{
+    cout<<"\nObiect Distrus " ;
+}
+
+void Sistem_Reglare::afisare_date_SR()
+{
+    Sistem::afisare_date();
+    cout << "\n \n \t Sistem Reglare";
+	cout << "\n Traductor-ul de Nivel :" << traductor_de_nivel;
+	cout << "\n Regulator-ul de Nivel :" << regulator_de_nivel;
+}
+
+class Sistem_Reglare_Automata : public Sistem_Reglare
+{
+protected:
+    char *actuator, *instrument_vizualizare, *senzor_de_nivel;
+
+public:
+    Sistem_Reglare_Automata(char*, char*, char*, char*, char*, char*, char*, char*, char*);
+    ~Sistem_Reglare_Automata();
+    void afisare_date_SRA();
+};
+
+
+Sistem_Reglare_Automata::Sistem_Reglare_Automata(char *R, char *T, char *EE, char *TN, char *RReg, char *RN, char *AC, char *IV, char *SN) : Sistem_Reglare(R, T, EE, TN, RReg, RN)
+{
+    actuator = new char[strlen(AC)+1];
+    strcpy(actuator , AC );
+    instrument_vizualizare = new char[strlen(IV)+1];
+    strcpy(instrument_vizualizare , IV);
+    senzor_de_nivel = new char[strlen(SN)+1];
+    strcpy(senzor_de_nivel , SN);
+}
+
+Sistem_Reglare_Automata::~Sistem_Reglare_Automata()
+{
+    cout<<"\nObiect distrus !"<< endl;
+}
+
+void Sistem_Reglare_Automata::afisare_date_SRA()
+{
+    Sistem::afisare_date();
+    cout << "\n \n \n \t Sistem Reglare Automata";
+	cout << "\n Actuatorul de nivel:" << actuator;
+	cout << "\n Instrument Vizualizare:" << instrument_vizualizare;
+	cout << "\n Senzori de Nivel:" << senzor_de_nivel;
+}
+
+class Sistem_Reglare_Automata_Nivel : public Sistem_Reglare_Automata
+{
+protected:
+    char *adaptor;
+
+public:
+    Sistem_Reglare_Automata_Nivel(char*, char*, char*, char*, char*, char*, char*, char*, char*, char*);
+    ~Sistem_Reglare_Automata_Nivel();
+    void afisare_date_SRA_Nivel();
+};
+
+Sistem_Reglare_Automata_Nivel::Sistem_Reglare_Automata_Nivel(char *R, char *T, char *EE, char *TN, char *RReg, char *RN, char *AC, char *IV, char *SN, char *A) : Sistem_Reglare_Automata(R, T, EE, TN, RReg, RN, AC, IV, SN)
+{
+    adaptor = new char[strlen(A)+1];
+    strcpy(adaptor, A);
+}
+
+Sistem_Reglare_Automata_Nivel::~Sistem_Reglare_Automata_Nivel()
+{
+    cout<<"\n Obiect Distrus!" << endl;
+}
+
+void Sistem_Reglare_Automata_Nivel::afisare_date_SRA_Nivel()
+{
+    Sistem::afisare_date();
+    cout << "\n \n Sistem Reglare Automata Temperatura:";
+	cout << "\n Adaptor:" << adaptor;
+}
+
+class Sistem_Reglare_Automata_Nivel_controller : Sistem_Reglare_Automata_Nivel
+{
+protected:
+    char *rotametru;
+    double eroare;
+    int afisaj;
+
+public:
+    Sistem_Reglare_Automata_Nivel_controller(char*, char*, char*, char*, char*, char*, char*, char*, char*, char*, char*, double, int);
+    ~Sistem_Reglare_Automata_Nivel_controller();
+    void afisare_date_SRA_Nivel_controller();
+};
+
+Sistem_Reglare_Automata_Nivel_controller::Sistem_Reglare_Automata_Nivel_controller(char *R, char *T, char *EE, char *TN, char *RReg, char *RN, char *AC, char *IV, char *SN, char *A, char *RO, double ER , int AF) : Sistem_Reglare_Automata_Nivel(R, T, EE, TN, RReg, RN, AC, IV, SN, A)
+{
+    rotametru = new char[strlen(RO)+1];
+    strcpy(rotametru, RO);
+    eroare = ER;
+    afisaj = AF;
+}
+
+Sistem_Reglare_Automata_Nivel_controller::~Sistem_Reglare_Automata_Nivel_controller()
+{
+    cout<<"\n Obiect Distrus!"<< endl;
+}
+
+void Sistem_Reglare_Automata_Nivel_controller::afisare_date_SRA_Nivel_controller()
+{
+    Sistem::afisare_date();
+    cout << "\n Sistem Reglare Automata a Nivelului Controller:";
+	cout << "\n Rotametru de Nivel:" << rotametru;
+	cout<<"\n Eroarea:"<<eroare;
+	cout<<"\n Afisaj:"<<afisaj;
+}
+
+class Sistem_Reglare_Automata_Nivel_Actionare : public Sistem_Reglare_Automata_Nivel_controller
+{
+protected :
+    char *actiune;
+
+public:
+    Sistem_Reglare_Automata_Nivel_Actionare(char*, char*, char*, char*, char*, char*, char*, char*, char*, char*, char*, double, int, char*);
+    ~Sistem_Reglare_Automata_Nivel_Actionare();
+    void afisare_date_SRA_Nivel_Actionare();
+};
+
+Sistem_Reglare_Automata_Nivel_Actionare::Sistem_Reglare_Automata_Nivel_Actionare(char *R, char *T, char *EE, char *TN, char *RReg, char *RN, char *AC, char *IV, char *SN, char *A, char *RO, double ER , int AF, char*ACT) : Sistem_Reglare_Automata_Nivel_controller(R, T, EE, TN, RReg, RN, AC, IV, SN, A, RO, ER, AF)
+{
+
+    actiune = new char[strlen(ACT)+1];
+    strcpy(actiune, ACT);
+
+}
+
+void Sistem_Reglare_Automata_Nivel_Actionare::afisare_date_SRA_Nivel_Actionare()
+{
+    Sistem_Reglare_Automata_Nivel_controller::afisare_date_SRA_Nivel_controller();
+    cout<<"\n Actiunea:"<<actiune;
+}
+
+class Sistem_Reglare_Automata_PI
+{
+    protected: int kr,ti;
+    public: Sistem_Reglare_Automata_PI(int,int);
+             ~Sistem_Reglare_Automata_PI();
+             void afisare_date();
+};
+
+Sistem_Reglare_Automata_PI::Sistem_Reglare_Automata_PI(int KR,int TI)
+{
+    kr=KR;
+    ti=TI;
+}
+
+Sistem_Reglare_Automata_PI::~Sistem_Reglare_Automata_PI()
+{
+    cout<<"\n Obiect distrus!"<<endl;
+}
+
+void Sistem_Reglare_Automata_PI::afisare_date()
+{
+    cout<<"\n Kr:"<<kr;
+    cout<<"\n Ti:"<<ti;
+}
+
+class Sistem_Reglare_Automata_PID:public Sistem_Reglare_Automata_PI
+{
+    protected: int td;
+    public: Sistem_Reglare_Automata_PID(int,int,int);
+             ~Sistem_Reglare_Automata_PID();
+             void afisare_date_PID();
+             int set_td(double SET_POINT){td=SET_POINT;}
+             int get_td();
+};
+
+Sistem_Reglare_Automata_PID::Sistem_Reglare_Automata_PID(int KR,int TI,int TD):Sistem_Reglare_Automata_PI(KR,TI)
+{
+    kr=KR;
+    ti=TI;
+    td=TD;
+}
+
+Sistem_Reglare_Automata_PID::~Sistem_Reglare_Automata_PID()
+{
+    cout<<"\n Obiect distrus!"<<endl;
+}
+
+void Sistem_Reglare_Automata_PID::afisare_date_PID()
+{
+    Sistem_Reglare_Automata_PI::afisare_date();
+    cout<<"\n Td:"<<td;
+}
+
+int Sistem_Reglare_Automata_PID::get_td()
+{
+    return td;
+}
+
+int main()
+{
+    Sistem_Reglare_Automata_Nivel_controller s1("De Nivel", "De Nivel", "Automat", "Diferentiala", "Diferentiala", "AC", "Tip cadran", "Tablou", "Superior", "De Nivel", "Nivelului Curent", 0.03, 16);
+    Sistem_Reglare_Automata_Nivel_controller s2(" Nivel", " Nivel", "Automat", "Exponentiala", "Diferentiala", "AC", "Tip cadran", "Tablou", "Superior", "De Nivel", "Nivelului Recent", 0.3, 12);
+    Sistem_Reglare_Automata_Nivel_controller s3("De Nivel", "De Nivel", "Automat", "Diferentiala", "Diferentiala", "AC", "Tip cadran", "Tablou", "Exterior", "De Nivel", "Diferenta de nivele", 0.16, 9);
+	s1.afisare_date_SRA_Nivel_controller();
+	cout<<"\n_________________________________________________________________"<< endl;
+	s2.afisare_date_SRA_Nivel_controller();
+	cout<<"\n_________________________________________________________________"<< endl;
+	s3.afisare_date_SRA_Nivel_controller();
+	cout<<"\n_________________________________________________________________"<<endl;
+	Sistem_Reglare_Automata_PID s4(4,7,9);
+	s4.afisare_date_PID();
+	s4.set_td(6);
+	cout<<"\n Noua valoare de referinta TD:"<<s4.get_td();
+    cout<<"\n_________________________________________________________________"<<endl;
+
+
+
+    return 0;
+}
