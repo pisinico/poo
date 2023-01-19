@@ -1,0 +1,394 @@
+// SRA-pH-proiect.cpp : This file contains the 'main' function. Program execution begins and ends there.
+//
+
+#include <iostream>
+#include <string.h>
+#include <conio.h>
+#include <math.h>
+
+using namespace std;
+
+//interfata clasei Sistem
+class Sistem
+{
+protected: char regulator[100], traductor[100], element_executie[100],tip_treapta[100];
+           static int nr;
+public: //declarare constructor cu parametrii
+        Sistem(char const*, char const*, char const*,char const*);
+	    ~Sistem();//declarare destructor
+      //declarare functie membru pentru afisare date membru
+	  void afisare_sistem();
+	  char*get_tip();
+	  static int get_nr();
+};
+
+//initializare membru static
+int Sistem::nr=0;
+
+//declarare functie ce returneaza tipul treptei
+char*Sistem::get_tip()
+{
+    return tip_treapta;
+}
+//definire constructor cu parametrii
+Sistem::Sistem(char const* R, char const* T, char const* EE,char const*TT)
+{
+	strcpy_s(regulator, R);
+	strcpy_s(traductor, T);
+	strcpy_s(element_executie, EE);
+	strcpy_s(tip_treapta,TT);
+	nr++;
+}
+
+//definire destructor
+Sistem::~Sistem()
+{
+	cout << "\n Obiect distrus" << endl;
+}
+//definire functie de afisare
+void Sistem::afisare_sistem()
+{
+    cout<<"\nSistem"<<endl;
+	cout <<"\nRegulator:" << regulator;
+	cout <<"\nTraductor:" << traductor;
+	cout <<"\nElement executie:" << element_executie;
+
+}
+//definire functie membru statica
+int Sistem::get_nr()
+{
+    return nr;
+}
+
+//interfata clasei Sistem_Reglare
+class Sistem_Reglare : public Sistem
+{
+
+protected: char traductor_pH[100], electrod1[100], electrod2[100];
+
+//zona declarare metode
+public: //declarare constructor cu parametrii
+       Sistem_Reglare(char const*, char const*, char const*, char const*, char const*, char const*,char const*);
+	   //declarare destructor
+	  ~Sistem_Reglare();
+	  //declarare functie membru de afisare
+	  void afisare_Sistem_Reglare();
+};
+
+//definire constructor cu parametrii
+Sistem_Reglare::Sistem_Reglare(char const* R, char const* T, char const* EE, char const*TT, char const* TP, char const* ES, char const* ER) :Sistem(R, T, EE,TT)
+{
+	strcpy_s(traductor_pH, TP);
+	strcpy_s(electrod1, ES);
+	strcpy_s(electrod2, ER);
+
+}
+
+//definire destructor
+Sistem_Reglare::~Sistem_Reglare()
+{
+	cout << "\nObiect distrus";
+}
+
+void Sistem_Reglare::afisare_Sistem_Reglare()
+{
+    cout << "\-Sistem Reglare";
+	Sistem::afisare_sistem();
+	cout << "\nTraductor pH:" << traductor_pH;
+	cout << "\nElectrodul nr 1:" << electrod1;
+	cout << "\nElectrodul nr 2:" << electrod2;
+
+}
+//interfata clasei Sistem_Reglare_Automata
+class Sistem_Reglare_Automata : public Sistem_Reglare
+{
+
+protected: char amplificator[100], rezistente[100];
+		 double pHsp, pHout, eroare;
+//metode
+public: Sistem_Reglare_Automata(char const*,char const*, char const*, char const*, char const*, char const*, char const*, char const*, char const*, double, double, double);
+	  ~Sistem_Reglare_Automata();
+	  void afisare_SRA();
+	  inline void set_phsp(double SET_POINT) { pHsp = SET_POINT; }
+	  double get_pHout();
+	  double get_pHsp();
+	  double calcul_eroare();
+};
+//definire functie ce returneaza valoarea pH-ului la iesirea din proces pHout
+double Sistem_Reglare_Automata::get_pHout()
+{
+    return pHout;
+}
+
+//definire functie ce returneaza valoarea de referinta a pH-ului
+double Sistem_Reglare_Automata::get_pHsp()
+{
+        return pHsp;
+}
+
+
+//definire constructor cu parametrii
+Sistem_Reglare_Automata::Sistem_Reglare_Automata(char const* R, char const* T, char const* EE, char const*TT, char const* TP, char const* ES, char const* ER, char const* AM, char const* REZ, double PHSP, double PHOUT, double ERR):Sistem_Reglare(R,T,EE,TT,TP,ES,ER)
+{
+	strcpy_s(amplificator, AM);
+	strcpy_s(rezistente, REZ);
+	pHsp = PHSP;
+	pHout = PHOUT;
+    eroare=ERR;
+}
+
+//definire destructor-dealocare dinamica
+Sistem_Reglare_Automata::~Sistem_Reglare_Automata()
+{
+    delete amplificator;
+    delete rezistente;
+}
+
+void Sistem_Reglare_Automata::afisare_SRA()
+{
+    //redefinirea functiei de afisare din clasa Sistem_Reglare
+    cout<<"\--Sistem de Reglare Automata"<<endl;
+    Sistem_Reglare::afisare_Sistem_Reglare();
+    cout<<"\nAmplificator:"<<amplificator;
+    cout<<"\nRezistente:"<<rezistente;
+}
+
+//definire functie pentru calculul erorii
+double Sistem_Reglare_Automata::calcul_eroare()
+{
+    return get_pHsp()-get_pHout();
+}
+//interfata clasei Sistem_Reglare_Automata_pH
+class Sistem_Reglare_Automata_pH:public Sistem_Reglare_Automata
+{
+    protected: char*indicator_ph;
+    public:  Sistem_Reglare_Automata_pH(char const*,char const*, char const*, char const*, char const*, char const*, char const*, char const*, char const*, double, double, double,char const*);
+            ~Sistem_Reglare_Automata_pH();
+             inline void set_indicator(char*SET_POINT)
+             { indicator_ph = SET_POINT; }
+             friend char*get_indicator(Sistem_Reglare_Automata_pH&);
+             void afisare_SRAPH();
+};
+
+
+//definire constructor cu parametrii
+Sistem_Reglare_Automata_pH::Sistem_Reglare_Automata_pH(char const* R, char const* T, char const* EE, char const*TT, char const* TP, char const* ES, char const* ER, char const* AM, char const* REZ, double PHSP, double PHOUT, double ERR,char const*IND):Sistem_Reglare_Automata(R,T,EE,TT,TP,ES,ER,AM,REZ,PHSP,PHOUT,ERR)
+{
+   indicator_ph=new char[strlen(IND)+1];
+   strcpy(indicator_ph,IND);
+
+
+}
+
+//definire destructor-dealocare dinamica
+Sistem_Reglare_Automata_pH::~Sistem_Reglare_Automata_pH()
+{
+    delete indicator_ph;
+}
+
+char*get_indicator(Sistem_Reglare_Automata_pH&X)
+{
+    return X.indicator_ph;
+
+}
+
+void Sistem_Reglare_Automata_pH::afisare_SRAPH()
+{
+    cout<<"\n---Sistem de Reglare Automata pH"<<endl;
+    Sistem_Reglare_Automata::afisare_SRA();
+    cout<<"\nCuloarea indicatorului este:"<<indicator_ph;
+
+}
+
+//interfata clasei Sistem_Reglare_Automata_apa_potabila_pH_PID
+class Sistem_Reglare_Automata_apa_potabila_pH_PID:public Sistem_Reglare_Automata_pH
+{
+    protected: char*micro_procesor;
+               double kp,td,ti,bp;
+    public: Sistem_Reglare_Automata_apa_potabila_pH_PID(char const*,char const*, char const*, char const*, char const*, char const*, char const*, char const*, char const*, double, double, double,char const*,char const*,double,double,double,double);
+            ~Sistem_Reglare_Automata_apa_potabila_pH_PID();
+            char*get_proces();
+            inline void set_KP(double SET_POINT)
+            { kp = SET_POINT; }
+            double get_KP();
+            double get_BP();
+            void afisre_SRAPID();
+};
+
+//definire constructor cu parametrii
+Sistem_Reglare_Automata_apa_potabila_pH_PID::Sistem_Reglare_Automata_apa_potabila_pH_PID(char const* R, char const* T, char const* EE, char const*TT, char const* TP, char const* ES, char const* ER, char const* AM, char const* REZ, double PHSP, double PHOUT, double ERR,char const*IND,char const*MP,double KP,double TD,double TI,double BP):Sistem_Reglare_Automata_pH(R,T,EE,TT,TP,ES,ER,AM,REZ,PHSP,PHOUT,ERR,IND)
+{
+    micro_procesor=new char[strlen(MP)+1];
+    strcpy(micro_procesor,MP);
+    kp=KP;
+    td=TD;
+    ti=TI;
+    bp=BP;
+
+}
+Sistem_Reglare_Automata_apa_potabila_pH_PID::~Sistem_Reglare_Automata_apa_potabila_pH_PID()
+{
+    delete micro_procesor;
+}
+//definire functie ce returneaza tipul micro procesorului
+char*Sistem_Reglare_Automata_apa_potabila_pH_PID::get_proces()
+{
+    return micro_procesor;
+}
+
+//definire functie ce returneaza constanta de proportionalitate
+double Sistem_Reglare_Automata_apa_potabila_pH_PID::get_KP()
+{
+    return kp;
+}
+
+//definire functie ce returneaza banda de proportionalitate
+double Sistem_Reglare_Automata_apa_potabila_pH_PID::get_BP()
+{
+    return (100/get_KP());
+}
+
+void Sistem_Reglare_Automata_apa_potabila_pH_PID::afisre_SRAPID()
+{
+    cout<<"\n----Sistem de Reglare Automata Apa Potabila pH PID";
+    //Sistem_Reglare_Automata_pH::afisare_SRAPH();
+    cout<<"\nMicro-procesor:"<<micro_procesor;
+    cout<<"\nKP:"<<kp;
+    cout<<"\nTD:"<<td;
+    cout<<"\nTI:"<<ti;
+    cout<<"\nBP:"<<bp;
+
+}
+
+//interfata clasei Sistem_Reglare_Automata_apa_potabila_pH_PID_caracter_acid
+class Sistem_Reglare_Automata_apa_potabila_pH_PID_caracter_acid:public Sistem_Reglare_Automata_apa_potabila_pH_PID
+{
+    protected: double concentratie_ioni_acid,rezultat_acid;
+    public: Sistem_Reglare_Automata_apa_potabila_pH_PID_caracter_acid(char const*,char const*, char const*, char const*, char const*, char const*, char const*, char const*, char const*, double, double, double,char const*,char const*,double,double,double,double,double,double);
+            ~Sistem_Reglare_Automata_apa_potabila_pH_PID_caracter_acid();
+            inline void set_concentratie(double SET_POINT) { concentratie_ioni_acid = SET_POINT; }
+            double get_concentratie();
+            double calcul_rezultat();
+            void afisare_acid();
+};
+
+Sistem_Reglare_Automata_apa_potabila_pH_PID_caracter_acid::Sistem_Reglare_Automata_apa_potabila_pH_PID_caracter_acid(char const* R, char const* T, char const* EE, char const*TT, char const* TP, char const* ES, char const* ER, char const* AM, char const* REZ, double PHSP, double PHOUT, double ERR,char const*IND,char const*MP,double KP,double TD,double TI,double BP,double CON,double RREZ):Sistem_Reglare_Automata_apa_potabila_pH_PID(R,T,EE,TT,TP,ES,ER,AM,REZ,PHSP,PHOUT,ERR,IND,MP,KP,TD,TI,BP)
+{
+      concentratie_ioni_acid=CON;
+      rezultat_acid= -log(concentratie_ioni_acid);
+
+}
+
+Sistem_Reglare_Automata_apa_potabila_pH_PID_caracter_acid::~Sistem_Reglare_Automata_apa_potabila_pH_PID_caracter_acid()
+{
+    cout<<"\nDestructor obiect!";
+}
+//definire functie ce returneaza valoarea concentratiei de ioni
+double Sistem_Reglare_Automata_apa_potabila_pH_PID_caracter_acid::get_concentratie()
+{
+    return concentratie_ioni_acid;
+}
+
+//definire functie ce calculeaza rezultatul neutralizarii concentratiei de ioni
+double Sistem_Reglare_Automata_apa_potabila_pH_PID_caracter_acid::calcul_rezultat()
+{
+    return -log(get_concentratie());
+}
+
+void Sistem_Reglare_Automata_apa_potabila_pH_PID_caracter_acid::afisare_acid()
+{
+    cout<<"\n-----Sistem Reglare Automata Apa Potabila pH PID Caracter Acid"<<endl;
+    Sistem_Reglare_Automata_apa_potabila_pH_PID::afisre_SRAPID();
+    cout<<"\nConcentratia de ioni-acid este:"<<concentratie_ioni_acid;
+    cout<<"\nRezultatul-acid este:"<<rezultat_acid;
+
+}
+
+//interfata clasei Sistem_Reglare_Automata_apa_potabila_pH_PID_caracter_bazic
+class Sistem_Reglare_Automata_apa_potabila_pH_PID_caracter_bazic:public Sistem_Reglare_Automata_apa_potabila_pH_PID
+{
+    protected: double concentratie_ioni_bazic,rezultat_bazic;
+    public: Sistem_Reglare_Automata_apa_potabila_pH_PID_caracter_bazic(char const*,char const*, char const*, char const*, char const*, char const*, char const*, char const*, char const*, double, double, double,char const*,char const*,double,double,double,double,double,double);
+            ~Sistem_Reglare_Automata_apa_potabila_pH_PID_caracter_bazic();
+            inline void set_concentratie(double SET_POINT) { concentratie_ioni_bazic = SET_POINT; }
+            double get_concentratie_bazic();
+            double calcul_rezultat_bazic();
+            void afisare_bazic();
+};
+Sistem_Reglare_Automata_apa_potabila_pH_PID_caracter_bazic::Sistem_Reglare_Automata_apa_potabila_pH_PID_caracter_bazic(char const* R, char const* T, char const* EE, char const*TT, char const* TP, char const* ES, char const* ER, char const* AM, char const* REZ, double PHSP, double PHOUT, double ERR,char const*IND,char const*MP,double KP,double TD,double TI,double BP,double CONB,double RREZB):Sistem_Reglare_Automata_apa_potabila_pH_PID(R,T,EE,TT,TP,ES,ER,AM,REZ,PHSP,PHOUT,ERR,IND,MP,KP,TD,TI,BP)
+{
+      concentratie_ioni_bazic=CONB;
+      rezultat_bazic= log(concentratie_ioni_bazic);
+
+}
+Sistem_Reglare_Automata_apa_potabila_pH_PID_caracter_bazic::~Sistem_Reglare_Automata_apa_potabila_pH_PID_caracter_bazic()
+{
+    cout<<"\nObiect distrus";
+}
+//definire functie ce returneaza valoarea concentratiei de ioni
+double Sistem_Reglare_Automata_apa_potabila_pH_PID_caracter_bazic::get_concentratie_bazic()
+{
+    return concentratie_ioni_bazic;
+}
+
+//definire functie ce calculeaza rezultatul neutralizarii concentratiei de ioni
+double Sistem_Reglare_Automata_apa_potabila_pH_PID_caracter_bazic::calcul_rezultat_bazic()
+{
+    return 14+log(get_concentratie_bazic());
+}
+
+void Sistem_Reglare_Automata_apa_potabila_pH_PID_caracter_bazic::afisare_bazic()
+{
+    cout<<"\n------Sistem Reglare Automata Apa Potabila pH PID Caracter Bazic"<<endl;
+    Sistem_Reglare_Automata_apa_potabila_pH_PID::afisre_SRAPID();
+    cout<<"\nConcentratia de ioni-bazic este:"<<concentratie_ioni_bazic;
+    cout<<"\nRezultatul-bazic este:"<<rezultat_bazic;
+
+}
+
+int main()
+{
+
+    Sistem ob1("P","de pH","electric","de intrare");
+    ob1.afisare_sistem();
+    cout<<"\nTipul treptei este:"<<ob1.get_tip();
+    cout<<"\n_______________________________________________________________"<<endl;
+
+    Sistem_Reglare_Automata ob2("PI","de pH","electrice","de intrare","automat","rutilic","bazic","clasa A","din metal",7.2,7.3,0.1);
+    ob2.afisare_SRA();
+    ob2.set_phsp(7.9);
+    cout<<"\nValoarea pH-ului la iesire din proces este:"<<ob2.get_pHout();
+    cout<<"\nEroarea este:"<<ob2.calcul_eroare();
+    cout<<"\n_______________________________________________________________"<<endl;
+
+    Sistem_Reglare_Automata_pH ob3("PI","de pH","electrice","de intrare","automat","rutilic","bazic","clasa A","din metal",7.2,7.3,0.1,"incolor");
+    ob3.afisare_SRAPH();
+    cout<<"\n_______________________________________________________________"<<endl;
+
+    Sistem_Reglare_Automata_apa_potabila_pH_PID ob4("PID","de reglare","electrice","de intrare","automat","rutilic","bazic","clasa A","din metal",7.2,7.3,0.1,"incolor","Pharmag",2.3,6.4,6.8,43.47);
+    ob4.afisre_SRAPID();
+    ob4.set_KP(91);
+    cout<<"\nNoua valoare a constantei de proportionalitate este:"<<ob4.get_KP();
+    cout<<"\nBanda de proportionalitate este:"<<ob4.get_BP();
+    ob4.set_phsp(8.6);
+    cout<<"\nNoua valoare de referinta a pH-ului este:"<<ob4.get_pHsp();
+    cout<<"\nEroarea este:"<<ob4.calcul_eroare();
+    cout<<"\n_______________________________________________________________"<<endl;
+
+    Sistem_Reglare_Automata_apa_potabila_pH_PID_caracter_acid ob5("PID","de neutralizare","electrice","de intrare","automat","rutilic","bazic","clasa B","din metal",8.1,7.5,0.6,"rosu","portabil",2.1,5.2,5.8,47.61,0.2,-0.69);
+    ob5.afisare_acid();
+    ob5.set_concentratie(0.004);
+    cout<<"\nNoua concentratie este:"<<ob5.get_concentratie();
+    cout<<"\nValoarea ph-ului este:"<<ob5.calcul_rezultat();
+    cout<<"\n_______________________________________________________________"<<endl;
+
+    Sistem_Reglare_Automata_apa_potabila_pH_PID_caracter_bazic ob6("PID","de neutralizare","electrice","de intrare","automat","rutilic","bazic","clasa B","din metal",7.6,7.2,0.4,"verde","portabil",2.5,4.3,4.9,40,400,16.60);
+    ob6.afisare_bazic();
+    ob6.set_concentratie(0.002);
+    cout<<"\nNoua concentratie este:"<<ob6.get_concentratie_bazic();
+    cout<<"\nValoarea pH-ului este:"<<ob6.calcul_rezultat_bazic();
+    cout<<"\n_______________________________________________________________"<<endl;
+    cout<<"\nNumarul de obiecte create: "<<Sistem::get_nr();
+
+}
+
